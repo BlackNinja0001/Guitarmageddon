@@ -25,31 +25,32 @@ public class CheckerController : MonoBehaviour {
 	public static char destroyL = 'n';
 	public static char destroySEMI = 'n';
 
+	public float particleLife;
 
 	// Use this for initialization
 	void Start () {
-		//Initialize note instantiations
+		
 	}
 	
 	// Update is called once per physics step
 	void Update () {
 		if (Input.GetKeyDown(keyLeft)) {
-			Debug.Log("Key " + keyLeft + " for " + gameObject.name + " pressed.");
+			Debug.Log("Key " + keyLeft + " for " + gameObject.name + " pressed at " + SongManager.songLength + ".");
 			if (correctNoteCollision){
 				destroyA = 'y';
-				Debug.Log("Note " + keyLeft + " destroyable.");
+				//Debug.Log("Note " + keyLeft + " destroyable.");
 			}
 		} else if (Input.GetKeyDown(keyRight)) {
-			Debug.Log("Key " + keyRight + " for " + gameObject.name + " pressed.");
+			Debug.Log("Key " + keyRight + " for " + gameObject.name + " pressed at " + SongManager.songLength + ".");
 			if (correctNoteCollision){
 				destroyJ = 'y';
-				Debug.Log("Note " + keyRight + " destroyable.");
+				//Debug.Log("Note " + keyRight + " destroyable.");
 			}
 		} else if (Input.GetKeyUp(keyLeft)) {
-			Debug.Log("Key " + keyLeft + " for " + gameObject.name + " released.");
+			//Debug.Log("Key " + keyLeft + " for " + gameObject.name + " released at " + SongManager.songLength + ".");
 			destroyA = 'n';
 		} else if (Input.GetKeyDown(keyRight)) {
-			Debug.Log("Key " + keyRight + " for " + gameObject.name + " released.");
+			//Debug.Log("Key " + keyRight + " for " + gameObject.name + " released at " + SongManager.songLength + ".");
 			destroyJ = 'n';
 		}
 
@@ -62,7 +63,7 @@ public class CheckerController : MonoBehaviour {
 			other.gameObject.name == (correctNoteRight.name + "(Clone)"))
 		{
 			//Debug.Log("destroyA: " + destroyA);
-			Debug.Log(other.name + " within range of " + gameObject.name);
+			//Debug.Log(other.name + " within range of " + gameObject.name);
 			correctNoteCollision = true;
 			if (destroyA.Equals('y') //appropriate key is pressed
 				&& 
@@ -71,9 +72,17 @@ public class CheckerController : MonoBehaviour {
 				Destroy(other.gameObject);
 				Instantiate(correctBurst, other.transform.position, correctBurst.rotation);
 				destroyA.Equals('n');
+
+				DelayAndDestroy(GameObject.Find("CorrectNoteParticles(Clone)"), particleLife);
 			}
 		}
 
+	}
+
+	// Coroutine to delay something by "waitTime" seconds
+	IEnumerator DelayAndDestroy(Object obj, float waitTime) {
+		yield return new WaitForSeconds(waitTime); //Test
+		Destroy(obj);
 	}
 
 	// Waited too long, missed note
@@ -82,7 +91,7 @@ public class CheckerController : MonoBehaviour {
 			other.gameObject.name == (correctNoteRight.name + "(Clone)"))
 		{
 			//Debug.Log("destroyA: " + destroyA);
-			Debug.Log(other.name + " out of range of " + gameObject.name);
+			//Debug.Log(other.name + " out of range of " + gameObject.name);
 			correctNoteCollision = false;
 			if (gameObject.name.Equals("A Note(Clone)")){
 				//maybe play a failure sound effect
